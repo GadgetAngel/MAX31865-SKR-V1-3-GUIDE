@@ -151,12 +151,12 @@ You need to **solder two bridges** on the MAX31865 board.  Marlin will only read
 
 7. If you want to use the Adafruit MAX31865 board for PT100 sensor or PT1000 sensor with your SKR V1.3 board then **ENSURE that the Adafruit MAX31865 library is my modified Adafruit MAX31865 library called Adafruit-MAX31865-V1.1.0-Mod-M** by doing the following:
 Check that in **platformio.ini file** the following line exists in [common] under `lib_deps           =` and feature dependencies `[features]`:
-`MAX6675_IS_MAX31865     = Adafruit MAX31865 library@~1.1.0`
+`MAX6675_._IS_MAX31865     = Adafruit MAX31865 library@~1.1.0`
 
 Change the line:
-`MAX6675_IS_MAX31865     = Adafruit MAX31865 library@~1.1.0`
+`MAX6675_._IS_MAX31865     = Adafruit MAX31865 library@~1.1.0`
 to
-`MAX6675_IS_MAX31865     = https://github.com/GadgetAngel/Adafruit-MAX31865-V1.1.0-Mod-M.git`
+`MAX6675_._IS_MAX31865     = https://github.com/GadgetAngel/Adafruit-MAX31865-V1.1.0-Mod-M.git`
 
 ---
 
