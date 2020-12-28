@@ -74,7 +74,7 @@ The below wiring diagram for PT100 using Analog ADC input using 3.3 VDC for the 
 
 # The information contained in [1, 4-14] are for the Adafruit MAX31865 board (PT100/PT100 sensors) with the SKR V1.3 MCU board
 
-You can click on the below image and the browser will download the .jpg file or you can click on this URL address: https://github.com/GadgetAngel/MAX31865-SKR-V1-3-GUIDE/blob/main/images/General%20Information%20for%20SKR%20V1.3%20board%20Part1.jpg
+4. You can click on the below image and the browser will download the .jpg file or you can click on this URL address: https://github.com/GadgetAngel/MAX31865-SKR-V1-3-GUIDE/blob/main/images/General%20Information%20for%20SKR%20V1.3%20board%20Part1.jpg
 
 **In the below diagram, all the PINS in Yellow boxes are available on the SKR V1.3 board for use as digital I/O pins that the Marlin user can manipulate (the NOTES tell you when a PIN is available and when it it NOT available:** 
 
@@ -361,7 +361,41 @@ Ensure in **configuration_adv.h** file:
   //#define SDCARD_CONNECTION LCD    //this is set for LCD like it is in the pins_BTT_SKR_V1_3.h file, just incase this get enabled. Leave it disabled for now
 ```
 
+In **platformio.ini** file:
+```
+	default_envs = LPC1768
+under [features] section of platformio.ini file:
+	replace `MAX6675_._IS_MAX31865   = Adafruit MAX31865 library@~1.1.0` with
+	`MAX6675_._IS_MAX31865    = https://github.com/GadgetAngel/Adafruit-MAX31865-V1.1.0-Mod-M.git`
+use the latest bugfix-2.0.x branch of Marlin (this will only work with the latest bugfix-2.0.x branch)
+
+this is what the env:common_LPC needs to look like:
+
+[common_LPC]
+platform          = https://github.com/p3p/pio-nxplpc-arduino-lpc176x/archive/0.1.3.zip
+platform_packages = framework-arduino-lpc176x@^0.2.6
+board             = nxp_lpc1768
+lib_ldf_mode      = off
+lib_compat_mode   = strict
+extra_scripts     = ${common.extra_scripts}
+  Marlin/src/HAL/LPC1768/upload_extra_script.py
+src_filter        = ${common.default_src_filter} +<src/HAL/LPC1768> +<src/HAL/shared/backtrace>
+lib_deps          = ${common.lib_deps}
+  Servo
+custom_marlin.USES_LIQUIDCRYSTAL = LiquidCrystal@1.0.0
+custom_marlin.NEOPIXEL_LED = Adafruit NeoPixel=https://github.com/p3p/Adafruit_NeoPixel/archive/1.5.0.zip
+build_flags       = ${common.build_flags} -DU8G_HAL_LINKS -IMarlin/src/HAL/LPC1768/include -IMarlin/src/HAL/LPC1768/u8g 
+  # debug options for backtrace
+  #-funwind-tables
+  #-mpoke-function-name
+```
+
 in **pins_BTT_SKR_common.h** :
+
+Set TEMP_0_PIN to the CS pin you 
+selected. In the below example I choose
+the EXP2 PIN P0_16.
+
 ```
 #define TEMP_0_PIN P0_16
 #define MAX6675_SS_PIN  TEMP_0_PIN
@@ -397,8 +431,8 @@ In configuration_adv.h file:
 #define MAX_CONSECUTIVE_LOW_TEMPERATURE_ERROR_ALLOWED 10
 ```
 
-You will be using an TFT screen from BTT. It can be any TFT screen you like but the only requirement is that the TFT screen can run with the RS232 connector only.  Most 
-of the BTT TFT screens can run with only the TFT connector (or RS232, this limits the screen to using only the TFT screen or touch mode, the simulated 12864 LCD Marlin mode will NOT be available to you).
+You will be using an TFT screen from BTT. It can be any TFT screen you like but the only requirement is that the **TFT screen can run with the RS232 connector only**.  Most 
+of the BTT TFT screens can run with only the TFT connector (or RS232, this limits the screen to using only the TFT screen or touch mode, _the simulated 12864 LCD Marlin mode will NOT be available to you_).
 
 **In configuration.h for the SKR V1.3 board**:
 ```	
@@ -456,9 +490,9 @@ You can click on the below image and the browser will download the .jpg file or 
 
 ++++++++++++++++++++++++++++++++**EXAMPLE 2**+++++++++++++++++++++++++++++++++++
 
-For **SKR V1.3 MCU board where the default hardware SPI bus is on micro SD Card reader** you would have to tap into the **hardware SPI lines via the micro SD Card reader**.
+### See NOTE4 if you plan on using Hardware SPI which shares the same bus as the ONBOARD micro-SD Card Reader (NOTE 4 is located in item number 4.)
 
-To setup Marlin for **Adafruit MAX31865** and **Hardware SPI**, on **SKR V1.3 board** in which the default hardware SPI bus is using the ONBOARD micro SD card reader do the following:
+To setup Marlin **on SKR V1.3 board** for **Adafruit MAX31865** and **Hardware SPI which occurs on the same bus as the ONBOARD micro-SD Card Reader**, do the following:
 
 set in **pins_BTT_SKR_V1_3.h** file:
 ```
@@ -495,18 +529,71 @@ set in **configuration_adv.h** file:
   //#define SDCARD_CONNECTION ONBOARD    //this is set for ONBOARD like it is in the pins_BTT_SKR_V1_3.h file, just in case this get enabled. Leave it disabled for now
 ```
 
-in **pins_BTT_SKR_PRO_common.h**:
+In **platformio.ini** file:
 ```
-#define TEMP_0_PIN  PE2
-#ifndef MAX31865_CS_PIN
-	#define MAX6675_SS_PIN TEMP_0_PIN
-        // force Hardware SPI by making  MAX31865_CS_PIN equal to MAX6675_SS_PIN
-	#define MAX31865_CS_PIN MAX6675_SS_PIN  
-#endif
+	default_envs = LPC1768
+under [features] section of platformio.ini file:
+	replace `MAX6675_._IS_MAX31865   = Adafruit MAX31865 library@~1.1.0` with
+	`MAX6675_._IS_MAX31865    = https://github.com/GadgetAngel/Adafruit-MAX31865-V1.1.0-Mod-M.git`
+use the latest bugfix-2.0.x branch of Marlin (this will only work with the latest bugfix-2.0.x branch)
+
+this is what the env:common_LPC needs to look like (you are adding -DTEMP_MODE=3 build flag):
+
+[common_LPC]
+platform          = https://github.com/p3p/pio-nxplpc-arduino-lpc176x/archive/0.1.3.zip
+platform_packages = framework-arduino-lpc176x@^0.2.6
+board             = nxp_lpc1768
+lib_ldf_mode      = off
+lib_compat_mode   = strict
+extra_scripts     = ${common.extra_scripts}
+  Marlin/src/HAL/LPC1768/upload_extra_script.py
+src_filter        = ${common.default_src_filter} +<src/HAL/LPC1768> +<src/HAL/shared/backtrace>
+lib_deps          = ${common.lib_deps}
+  Servo
+custom_marlin.USES_LIQUIDCRYSTAL = LiquidCrystal@1.0.0
+custom_marlin.NEOPIXEL_LED = Adafruit NeoPixel=https://github.com/p3p/Adafruit_NeoPixel/archive/1.5.0.zip
+build_flags       = ${common.build_flags} -DU8G_HAL_LINKS -IMarlin/src/HAL/LPC1768/include -IMarlin/src/HAL/LPC1768/u8g -DTEMP_MODE=3
+  # debug options for backtrace
+  #-funwind-tables
+  #-mpoke-function-name
 ```
-**In configuration.h**:
+
+in **pins_BTT_SKR_common.h** file:
+
+Set TEMP_0_PIN to the CS pin you 
+selected. In the below example I choose
+the E1_STEP_PIN or P0_01.
+
+```
+#define TEMP_0_PIN P0_01
+#define MAX6675_SS_PIN  TEMP_0_PIN
+#define MAX31865_CS_PIN MAX6675_SS_PIN  //forces Hardware SPI to be used
+```
+
+In **configuration_adv.h** file:
+```
+#define MONITOR_DRIVER_STATUS
+#define TMC_DEBUG
+#define SHOW_TEMP_ADC_VALUES
+#define MAX_CONSECUTIVE_LOW_TEMPERATURE_ERROR_ALLOWED 10
+```
+
+You will be using an TFT screen from BTT. It can be any TFT screen you like but the only requirement is that the **TFT screen can run with the RS232 connector only**.  Most 
+of the BTT TFT screens can run with only the TFT connector (or RS232, this limits the screen to using only the TFT screen or touch mode, _the simulated 12864 LCD Marlin mode will NOT be available to you_).
+
+**In configuration.h for the SKR V1.3 board**:
 ```	
-set TEMP_SENSOR_0 to -5
+#define SERIAL_PORT -1
+#define SERIAL_PORT_2 0
+#define BAUDRATE 115200
+#define MOTHERBOARD BOARD_BTT_SKR_V1_3
+#define EXTRUDERS 1
+#define TEMP_SENSOR_0 -5
+#define SDSUPPORT  //notice this is enabled, 
+                   //if this is disabled the SPI bus will be on EXP2
+//#define REPRAP_DISCOUNT_FULL_GRAPHIC_SMART_CONTROLLER //notice this 
+                                                        //is disabled
+//#define CR10_STOCKDISPLAY //notice this is disabled
 ```
 
 ### AND {
@@ -536,10 +623,18 @@ For **Marlin bugfix-2.0.x version or later versions of Marlin**:
 ```
 ### }
 
-Here is the wiring diagram for the **Adafruit MAX31865 with PT100 via Hardware SPI on the SKR PRO V1.1/V1.2 board**:
+Here is the wiring diagram for the **Adafruit MAX31865 with PT100 via Hardware SPI on the SKR V1.3 board when the default hardware SPI bus is the same as the ONBOARD Micro-SD Card Reader**:
 
-![One PT100s with One MAX31865 boards in Hardware  SPI on SKR PRO V1 2_V1 1 board _ Instructions and Wiring Diagram](https://user-images.githubusercontent.com/33468777/95124227-1bffdb80-0721-11eb-9b84-55658889349f.jpg)
+You need to **tap into the micro-SD card reader ONBOARD the MCU board** then use: 
+JSER Micro SD TF Memory Card Kit Male to Female Extension Adapter (https://www.amazon.com/gp/product/B071DKCK47/)  You will have to solder on three wires to the locations shown below and it only costs $4.00 on Amazon.com:
+ 
+![Micro_SD_CARD_Adapter Board to tap into SPI lines for the SD card reader with Labels](https://user-images.githubusercontent.com/33468777/99324341-d575c480-2828-11eb-8eb5-d82ef75daabc.jpg) Now all you need is one free I/O pin to specify the Chip Select for the MAX31865.
 
+You can click on the below image and the browser will download the .jpg file or you can click on this URL address: https://github.com/GadgetAngel/MAX31865-SKR-V1-3-GUIDE/blob/main/images/One%20PT100%20with%20One%20MAX31865%20boards%20in%20Hardware%20SPI%20with%20SD%20card%20reader%20on%20SKR%20V1.3%20board%20_%20Wiring%20Diagram%20Part4.jpg
+
+**All the YELLOW boxes on the SKR V1.3 board are possible digital I/O pins that are available to use depending on what you have set in the Marlin firmware**. _The NOTES indicate when the PINS are available and when they are NOT available for use._
+
+<img src="https://raw.githubusercontent.com/GadgetAngel/MAX31865-SKR-V1-3-GUIDE/main/images/One%20PT100%20with%20One%20MAX31865%20boards%20in%20Hardware%20SPI%20with%20SD%20card%20reader%20on%20SKR%20V1.3%20board%20_%20Wiring%20Diagram%20Part4.jpg?raw=true" />
 ---
 
 ### If you have 2 (two) Adafruit MAX31865 (for PT100/PT1000) boards you want to wire up to your 3D Printer, this is now been fixed in Marlin bugfix-2.0.x branch.  **So the release branch of Marlin 2.0.7.2 DOES NOT allow two Adafruit MAX31865 boards to work properly BUT the bugfix-2.0.x branch has fixed the issue.  I am sure Marlin 2.0.7.3 will also fix the issue.**
