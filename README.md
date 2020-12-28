@@ -85,9 +85,13 @@ The below wiring diagram for PT100 using Analog ADC input using 3.3 VDC for the 
 4A. **For Marlin 2.0.7.1** or earlier versions of Marlin: If you want to use the Adafruit MAX31865 board **with a PT100**, you MUST correct the calibration resistor value that Marlin uses in temperature.cpp as follows:
 If you search in temperature.cpp for the string **"max31865.temperature("**, there are ONLY **two places** in temperature.cpp that will be found:
 Original is:
+
 `             max31865.temperature(100, 400)  // 100 ohms = PT100 resistance. 400 ohms = calibration resistor`
+
 CHANGE TO:
+
 `             max31865.temperature(100, 430)  // 100 ohms = PT100 resistance. 400 ohms = calibration resistor`
+
 
 4B. **For Marlin 2.0.7.2**:  If you want to use the Adafruit MAX31865 boards **with a PT100**, you MUST use the Marlin variables in the **configuration.h** file to adjust the sensor resistance ohm value and calibration resistance ohm value as shown below.  If they are not present in **configuration.h** file then you will need to add the two statements below to **configuration.h** file.  Use the Marlin variables **instead of making the change in the Marlin software in temperature.cpp** as stated in 4A.
 
