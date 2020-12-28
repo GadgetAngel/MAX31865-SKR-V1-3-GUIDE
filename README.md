@@ -775,7 +775,7 @@ of the BTT TFT screens can run with only the TFT connector (or RS232, this limit
 #define SERIAL_PORT_2 0
 #define BAUDRATE 115200
 #define MOTHERBOARD BOARD_BTT_SKR_V1_3
-#define EXTRUDERS 1
+#define EXTRUDERS 2
 #define TEMP_SENSOR_0 -5
 #define TEMP_SENSOR_1 -5
 #define SDSUPPORT  //notice this is enabled or 
