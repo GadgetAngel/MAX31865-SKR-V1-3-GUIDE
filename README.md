@@ -443,6 +443,8 @@ Here is the wiring diagram for the Adafruit **MAX31865 with PT100 via Hardware S
 https://www.digikey.com/product-detail/en/te-connectivity-amp-connectors/1658622-1/AKC10B-ND/825411
 Orient the clamp on connector so that it is in the same orientation as the one already installed on the end of the flat ribbon cable that gets plugged into the EXP2 socket of the SKR V1.3 board. This way you will be able to keep straight which PINs are which. I oriented mine to be upside down just like the connector that is already on the end that plugs into the EXP2 socket of the SKR V1.3 board. Now all you need is one free I/O pin to specify the Chip Select for the MAX31865.
 
+You can click on the below image and the browser will download the .jpg file or you can go to the URL address: https://github.com/GadgetAngel/MAX31865-SKR-V1-3-GUIDE/blob/main/images/One%20PT100%20with%20One%20MAX31865%20boards%20in%20Hardware%20SPI%20with%20EXP2%20on%20SKR%20V1.3%20board%20_%20Wiring%20Diagram%20Part5.jpg
+
 <img src="https://raw.githubusercontent.com/GadgetAngel/MAX31865-SKR-V1-3-GUIDE/main/images/One%20PT100%20with%20One%20MAX31865%20boards%20in%20Hardware%20SPI%20with%20EXP2%20on%20SKR%20V1.3%20board%20_%20Wiring%20Diagram%20Part5.jpg?raw=true" />
 
 ++++++++++++++++++++++++++++++++**EXAMPLE 2**+++++++++++++++++++++++++++++++++++
