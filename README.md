@@ -52,7 +52,7 @@ LCD_PINS_RS is Register select (command/data) or software SPI signal SS for EXP1
 
 ---
 
-3. Translation table to be used (or Thermistor table) depends on the power you supply to the amplifier board and the ADC reference voltage of the MCU (THIS DOES NOT APPLY FOR THE MAX31865 BOARD, please skip this section 3):
+3. Translation table to be used (or Thermistor table) depends on the power you supply to the amplifier board and the ADC reference voltage of the MCU (**THIS DOES NOT APPLY FOR THE MAX31865 BOARD, please skip this section 3**. I leave it here for information if you want to use an analog connection for the PT100 sensor like using E3D PT100 amplifier board):
 
 - 1. Use table 20: When the power supply for the PT100/PT1000 Amplifier board is equal to the ADC reference voltage for the MCU.
 --  For SKR PRO V1.1/V1.2, SKR V1.3/V1.4/V1.4 Turbo, GTR V1.0, M5 V1.0 all use 3.3 VDC as the ADC reference voltage for the MCU.  Therefore use table 20 when the PT100/PT1000 Amplifier board is powered by 3.3VDC
