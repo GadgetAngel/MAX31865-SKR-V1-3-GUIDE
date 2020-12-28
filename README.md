@@ -44,7 +44,7 @@ must use TEMP_SENSOR_0 as the PT100 (or PT1000 or Thermocouple) even if you have
 ---
 
 2. Marlin still uses the old naming scheme of the 20x4 display `REPRAP_DISCOUNT_SMART_CONTROLLER` in the pins-file for the `software SPI pins names`:
-The EXP1 and EXP2 ports are used for display screens.  EXP1 contains a HARDWARE SPI bus while EXP2 contains a Software SPI bus.  The EXP1 hardware SPI bus signal names are obvious in the pins-file but the EXP1 software SPI bus signal names are **NOT obvious**. Here is the EXP1 software SPI bus signal names used in pins-file with their corresponding SPI software functions:
+The EXP1 and EXP2 ports are used for display screens.  EXP2 contains a HARDWARE SPI bus while EXP1 contains a Software SPI bus.  The EXP2 hardware SPI bus signal names are obvious in the pins-file but the EXP1 software SPI bus signal names are **NOT obvious**. Here is the EXP1 software SPI bus signal names used in pins-file with their corresponding SPI software functions:
 ```
 LCD_PINS_D4 is software SPI signal SCK for EXP1
 LCD_PINS_ENABLE is the data line or software SPI signal MOSI for EXP1
@@ -61,11 +61,6 @@ LCD_PINS_RS is Register select (command/data) or software SPI signal SS for EXP1
 -- The E3D PT100 Amplifier board wants 5V as its power supply. But the GTR V1.0 (like the SKR PRO) uses 3.3V as the ADC reference voltage for the MCU.  If you use 5VDC power to the PT100 amplifier board, the amplifier can output a maximum signal with 5VDC.  To protect the GTR V1.0  board (or the SKR PRO board), use a 3.6V Zener Diode (reverse biased hookup) between the output signal of the amplifier board and ground (to protect the MCU from getting fried from a 5V input).
 
 <img src="https://raw.githubusercontent.com/GadgetAngel/MAX31865-SKR-V1-3-GUIDE/main/images/Overvoltage%20Protection%20Block.jpg?raw=true" />
-
-On the GTR V1.0 board, here is a list of PINS that you will need to prevent negative current injection. We prevent negative current from flowing into the MCU by using a Schottky diode between the output signal of the amplifier board and ground.  I do this as preventive measure. It protects the MCU from getting fried.
-
-![GTR V1 0 Prevent Negative Current Injection](https://user-images.githubusercontent.com/33468777/94367447-e1f16280-00ac-11eb-882e-bbc1d7e52b35.jpg)
-![GTR V1 0 Footnote 3 block](https://user-images.githubusercontent.com/33468777/94367638-000b9280-00ae-11eb-9a25-19aba8db6fe5.jpg)
 
 The below wiring diagram for PT100 using Analog ADC input using 5V DC for the PT100 amplifier board but the MCU board (GTR V1.0) uses 3.3 VDC ADC reference voltage, therefore the Thermistor table to use for this is Table 21:
 
@@ -155,9 +150,14 @@ You need to **solder two bridges** on the MAX31865 board.  Marlin will only read
 
 ---
 
-7. If you want to use the Adafruit MAX31865 board for PT100 sensor or PT1000 sensor then **ENSURE that the Adafruit MAX31865 library is NOT the most recent update** by doing the following:
+7. If you want to use the Adafruit MAX31865 board for PT100 sensor or PT1000 sensor then **ENSURE that the Adafruit MAX31865 library is my modified Adafruit MAX31865 library called Adafruit-MAX31865-V1.1.0-Mod-M** by doing the following:
 Check that in **platformio.ini file** the following line exists in [common] under `lib_deps           =` and feature dependencies `[features]`:
 `MAX6675_IS_MAX31865     = Adafruit MAX31865 library@~1.1.0`
+
+Change the line:
+`MAX6675_IS_MAX31865     = Adafruit MAX31865 library@~1.1.0`
+to
+`MAX6675_IS_MAX31865     = https://github.com/GadgetAngel/Adafruit-MAX31865-V1.1.0-Mod-M.git`
 
 ---
 
@@ -171,7 +171,7 @@ Check that in **platformio.ini file** the following line exists in [common] unde
      A. Software SPI (where the MCU performs the handshake in software)
      B. Hardware SPI (where the MCU performs the handshake with hardware interrupts).
 
-10. If you want to use the **Hardware SPI** for Adafruit MAX31865, then you have to know which SPI bus on the MCU board is the **default hardware SPI bus** (SPI Bus 1 or SPI Bus 2) due to the fact that the Adafruit MAX31865 Library will default to this bus (Adafruit MAX31865 library does not expose the bus number, so it just defaults). 
+10. If you want to use the **Hardware SPI** for Adafruit MAX31865, then you have to know which SPI bus on the MCU board is the **default hardware SPI bus** (SPI Bus 0 or SPI Bus 1 or SPI Bus 2) due to the fact that the Adafruit MAX31865 Library will default to this bus (Adafruit MAX31865 library does not expose the bus number, so it just defaults). 
 ---
 
 11A. How to determine the **default hardware SPI bus for a the SKR boards**:
@@ -307,32 +307,88 @@ JSER Micro SD TF Memory Card Kit Male to Female Extension Adapter (https://www.a
  
 ![Micro_SD_CARD_Adapter Board to tap into SPI lines for the SD card reader with Labels](https://user-images.githubusercontent.com/33468777/99324341-d575c480-2828-11eb-8eb5-d82ef75daabc.jpg)
 
-I have also used BIGTREETECH's Module BTT TF Cloud V1.0 SD Cloud Wireless Transmission Module (https://www.biqu.equipment/products/bigtreetech-module-btt-tf-cloud-v1-0-sd-cloud-wireless-transmission-module) and tapped into the SPI lines of the onboard ESP-12S chip. But, while the chip boots up and is plugged into the MCU board the MCU board will indicate a "ERROR: MAX TEMP on E1" and halt the printer.  If you hit the MCU board's reset button the next time the MCU boots the TF cloud device might boot first or may not boot first.  If the MCU boot first than you will get the MAX TEMP error again.  
-
-I decided that this was not worth the hassle so I went with the JSER's "Micro SD TF Memory Card Kit Male to Female Extension Adapter" instead. BTW, the JSER item only costs $4.00 US dollars on amzon.com.  So get a couple, in case you can not get the wires attached on the first try.
-
 ---
 
 ## HARDWARE SPI for Adafruit MAX31865
 
-12. If you want to use **Hardware SPI** for **Adafruit MAX31865 (for PT100 or PT1000)** then you must know which SPI bus will be the default hardware SPI bus for the board.  For the SKR PRO V1.1 the default hardware SPI bus is EXP2.  For GTR V1.0 board the default hardware SPI bus is the onboard micro SD card reader.  You have to find a way to access the default hardware SPI bus' MOSI, MISO and SCK lines.  To access these lines for the SKR PRO board, use a clamp-on flat ribbon cable connector (https://www.digikey.com/product-detail/en/te-connectivity-amp-connectors/1658622-1/AKC10B-ND/825411). 
+12. If you want to use **Hardware SPI** for **Adafruit MAX31865 (for PT100 or PT1000)** then you must know which SPI bus will be the default hardware SPI bus for the board.  For the SKR V1.3 board the default hardware SPI bus is EXP2.  You have to find a way to access the default hardware SPI bus' MOSI, MISO and SCK lines.  To access these lines for the SKR V1.3 board, use a clamp-on flat ribbon cable connector (https://www.digikey.com/product-detail/en/te-connectivity-amp-connectors/1658622-1/AKC10B-ND/825411). 
 
 ![Default Hardware SPI Hack info Block](https://user-images.githubusercontent.com/33468777/94368385-bcb32300-00b1-11eb-8fcb-ae5aefcd6e1e.jpg)
 
 ++++++++++++++++++++++++++++++++**EXAMPLE 1**+++++++++++++++++++++++++++++++++++
 
-To setup Marlin **on GTR V1.0 board** for **Adafruit MAX31865** and **Hardware SPI**, do the following in **pins_BTT_GTR_V1_0.h** :
+To setup Marlin **on SKR V1.3 board** for **Adafruit MAX31865** and **Hardware SPI**, do the following:
+
+Ensure in **pins_BTT_SKR_V1_3.h** file:
 ```
-#define TEMP_0_PIN  PI9
+//
+// SD Support
+//
+
+#ifndef SDCARD_CONNECTION
+  #define SDCARD_CONNECTION                  LCD
+#endif
+```
+Ensure in **configuration.h** file:
+```
+/**
+ * SD CARD
+ *
+ * SD Card support is disabled by default. If your controller has an SD slot,
+ * you must uncomment the following option or it won't work.
+ */
+#define SDSUPPORT   //this can be enabled or disabled to your wishes
+```
+Ensure in **configuration_adv.h** file:
+```
+  /**
+   * Set this option to one of the following (or the board's defaults apply):
+   *
+   *           LCD - Use the SD drive in the external LCD controller.
+   *       ONBOARD - Use the SD drive on the control board. (No SD_DETECT_PIN. M21 to init.)
+   *  CUSTOM_CABLE - Use a custom cable to access the SD (as defined in a pins file).
+   *
+   * :[ 'LCD', 'ONBOARD', 'CUSTOM_CABLE' ]
+   */
+  //#define SDCARD_CONNECTION LCD    //this is set for LCD like it is in the pins_BTT_SKR_V1_3.h file, just incase this get enabled. Leave it disabled for now
+```
+
+in **pins_BTT_SKR_common.h** :
+```
+#define TEMP_0_PIN  P0_16
 #ifndef MAX31865_CS_PIN
 	#define MAX6675_SS_PIN TEMP_0_PIN
         // force Hardware SPI by making  MAX31865_CS_PIN equal to MAX6675_SS_PIN
 	#define MAX31865_CS_PIN MAX6675_SS_PIN  
 #endif
 ```
+in **configuration_adv.h** file:
+```
+In configuration_adv.h file:
+#define MONITOR_DRIVER_STATUS
+#define TMC_DEBUG
+#define SHOW_TEMP_ADC_VALUES
+#define MAX_CONSECUTIVE_LOW_TEMPERATURE_ERROR_ALLOWED 10
+```
+
+You will be using an TFT screen from BTT, it can any TFT screen you like but the only requirement is that it can run with the RS232 connector only.  Most 
+of the BTT TFT screen can run with only the TFT connector (or RS232, this limits the screen to using only the TFT screen or touch mode, the simulated 12864 LCD Marlin mode will NOT be available to you).
+
 **In configuration.h**:
 ```	
-set TEMP_SENSOR_0 to -5
+#define SERIAL_PORT -1
+#define SERIAL_PORT_2 0
+#define BAUDRATE 115200
+#define MOTHERBOARD BOARD_BTT_SKR_V1_3
+#define EXTRUDERS 1
+#define TEMP_SENSOR_0 -5
+#define SDSUPPORT  //notice this is enabled or 
+                   //it can also be disabled
+                   
+//#define REPRAP_DISCOUNT_FULL_GRAPHIC_SMART_CONTROLLER //notice this 
+                                                        //is disabled
+//#define CR10_STOCKDISPLAY //notice this is disabled
+
 ```
 
 ### AND {
@@ -362,8 +418,11 @@ For **Marlin bugfix-2.0.x version or later versions of Marlin**:
 ```
 ### }
 
-Here is the wiring diagram for the Adafruit **MAX31865 with PT100 via Hardware SPI on GTR V1.0 board**.  To access the Hardware SPI lines for the GTR V1.0 board use a Micro SD Card Extension Adapter and hack the pins off the Adapter (https://www.amazon.com/gp/product/B071DKCK47/) and the Adapter only cost $4.00 US dollars.  Now all you need is one free I/O pin to specify the Chip Select for the MAX31865.  Again, the GTR V10 board uses the SD Card readers SPI lines as the default hardware SPI when `SDSUPPORT` is **enabled in configuration.h file** AND while `SDCARD_CONNECTION  ONBOARD` is defined in pins_BTT_GTR_V1_0.h file.  Otherwise, tap into the EXP2 SPI lines.
+Here is the wiring diagram for the Adafruit **MAX31865 with PT100 via Hardware SPI on EXP2 connector for the SKR V1.3 board**.  To access the Hardware SPI lines for the SKR V1.3 board, you need to **tap into the EXP2 flat ribbon cable** use: 
+https://www.digikey.com/product-detail/en/te-connectivity-amp-connectors/1658622-1/AKC10B-ND/825411
+Orient the clamp on connector so that it is in the same orientation as the one already installed on the end of the flat ribbon cable that gets plugged into the EXP2 socket of the SKR V1.3 board. This way you will be able to keep straight which PINs are which. I oriented mine to be upside down just like the connector that is already on the end that plugs into the EXP2 socket of the SKR V1.3 board. Now all you need is one free I/O pin to specify the Chip Select for the MAX31865.
 
+xxxxxxxxx
 ![G_Hardware_SPI_MAX31865_PT100_Technique#2andMethod#1_wiring_diagram_Page_98](https://user-images.githubusercontent.com/33468777/99398364-5200b580-28b2-11eb-88b0-e18436859df5.jpg)
 
 ++++++++++++++++++++++++++++++++**EXAMPLE 2**+++++++++++++++++++++++++++++++++++
