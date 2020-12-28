@@ -60,7 +60,7 @@ LCD_PINS_RS is Register select (command/data) or software SPI signal SS for EXP1
 - 2. Use table 21: When the power supply for the PT100/PT1000 Amplifier board is different to the ADC reference voltage for the MCU. 
 -- The E3D PT100 Amplifier board wants 5V as its power supply. But the GTR V1.0 (like the SKR PRO) uses 3.3V as the ADC reference voltage for the MCU.  If you use 5VDC power to the PT100 amplifier board, the amplifier can output a maximum signal with 5VDC.  To protect the GTR V1.0  board (or the SKR PRO board), use a 3.6V Zener Diode (reverse biased hookup) between the output signal of the amplifier board and ground (to protect the MCU from getting fried from a 5V input).
 
-![Overvoltage Protection Block](https://user-images.githubusercontent.com/33468777/94367414-9e96f400-00ac-11eb-8f36-f3b9c2e6ce0f.jpg)
+<img src="https://raw.githubusercontent.com/GadgetAngel/MAX31865-SKR-V1-3-GUIDE/main/images/Overvoltage%20Protection%20Block.jpg?raw=true" />
 
 On the GTR V1.0 board, here is a list of PINS that you will need to prevent negative current injection. We prevent negative current from flowing into the MCU by using a Schottky diode between the output signal of the amplifier board and ground.  I do this as preventive measure. It protects the MCU from getting fried.
 
