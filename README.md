@@ -376,8 +376,11 @@ on the EXP1 and EXP2 connector the following PINS
 are not available for CS pin selection:
 
 EXP2 PIN P0_15, this is the SPI SCK_PIN
+
 EXP2 PIN P0_17, this is the SPI MISO_PIN
+
 EXP2 PIN P0_18, this is the SPI MOSI_PIN
+
 EXP1 PIN P1_23, this is the SPI SS_PIN for the LCD screen’s SD card reader.
 
 in **configuration_adv.h** file:
@@ -440,8 +443,7 @@ Here is the wiring diagram for the Adafruit **MAX31865 with PT100 via Hardware S
 https://www.digikey.com/product-detail/en/te-connectivity-amp-connectors/1658622-1/AKC10B-ND/825411
 Orient the clamp on connector so that it is in the same orientation as the one already installed on the end of the flat ribbon cable that gets plugged into the EXP2 socket of the SKR V1.3 board. This way you will be able to keep straight which PINs are which. I oriented mine to be upside down just like the connector that is already on the end that plugs into the EXP2 socket of the SKR V1.3 board. Now all you need is one free I/O pin to specify the Chip Select for the MAX31865.
 
-xxxxxxxxx
-![G_Hardware_SPI_MAX31865_PT100_Technique#2andMethod#1_wiring_diagram_Page_98](https://user-images.githubusercontent.com/33468777/99398364-5200b580-28b2-11eb-88b0-e18436859df5.jpg)
+<img src="https://raw.githubusercontent.com/GadgetAngel/MAX31865-SKR-V1-3-GUIDE/main/images/One%20PT100%20with%20One%20MAX31865%20boards%20in%20Hardware%20SPI%20with%20EXP2%20on%20SKR%20V1.3%20board%20_%20Wiring%20Diagram%20Part5.jpg?raw=true" />
 
 ++++++++++++++++++++++++++++++++**EXAMPLE 2**+++++++++++++++++++++++++++++++++++
 
