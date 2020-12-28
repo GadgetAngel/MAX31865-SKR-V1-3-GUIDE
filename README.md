@@ -827,9 +827,9 @@ You can click on the below image and the browser will download the .jpg file or 
 
 ---
 
-## Software SPI for Adafruit MAX31865 board
+## Software SPI for Adafruit MAX31865 board for SKR V1.3 MCU board
 
-14. If you want to use the **Software SPI** for **Adafruit MAX31865** then do the following:
+14. If you want to use the **Software SPI** for **Adafruit MAX31865 on the SKR V1.3 board** then do the following:
 
 - **use the Marlin variables for MAX6675: (MAX6675_SS_PIN, MAX6675_DO_PIN, MAX6675_SCK_PIN)**
 - ensure that the  MAX31865_CS_PIN is **NOT EQUAL** to the MAX6675_SS_PIN, and ensure the MAX31865_CS_PIN is defined
@@ -842,26 +842,120 @@ You can click on the below image and the browser will download the .jpg file or 
 
 ++++++++++++++++++++++++++++++EXAMPLE1+++++++++++++++++++++++++++++
 
-Below is a example of how to get **Software SPI** to work on **SKR PRO V1.1/V1.2** **for Adafruit MAX31865** (PT100 sensor), make the following changes in **pins_BTT_SKR_PRO_common.h**:
+Below is a example of how to get **Software SPI** to work on **SKR V1.3 board** **for Adafruit MAX31865** (PT100 sensor), make the following:
+
+ With this setup you can use EXP1 and EXP2 but leave the TFT connetor unused.  You can use a **REPRAP_DISCOUNT_FULL_GRAPHIC_SMART_CONTROLLER or a BTT TFT display screen which uses EXP1 and EXP2** but **leave the RS232 (TFT) connector unplugged** (_With this setup you will not have touch mode on the TFT screen only 12864 LCD simulated mode will be available_)
+
+Ensure in **pins_BTT_SKR_V1_3.h** file:
 ```
-#define TEMP_0_PIN    PE2
-#ifndef MAX6675_SS_PIN
-    #define MAX6675_DO_PIN 							PD5
-    #define MAX6675_SCK_PIN 						        PE0
-    #define MAX31865_MOSI_PIN 			                                PD2
-    //the below line must be equal to the CS line of MAX31865 board
-    #define MAX31865_CS_PIN						        TEMP_0_PIN
-    //set MAX6675_SS_PIN so it CAN NOT be equal to MAX31865_CS_PIN (this will force Software SPI to be used). If
-    //MAX31865_CS_PIN is NOT defined Marlin will automatically equate it to MAX6675_SS_PIN. Therefore, you must set
-    //MAX6675_SS_PIN to some unused PIN (the example here uses PG13 as a PIN not being used)
-    #define MAX6675_SS_PIN                                                         PG13   //hopefully this will not be needed in the future, I am working with Marlin with a PR to get rid of this unnecessary define.
-    //enable the below two lines if you have two Adafruit MAX31865 boards in software spi mode
-    //#define MAX31865_CS2_PIN                                                  TEMP_1_PIN
-    //#define MAX6675_SS2_PIN                                                   PG13
+//
+// SD Support
+//
+
+#ifndef SDCARD_CONNECTION
+  #define SDCARD_CONNECTION                  LCD
 #endif
 ```
-**In configuration.h**:
-`	set TEMP_SENSOR_0 to -5`.  If you have a second MAX31865 board then add `set TEMP_SENSOR_1 to -5`
+Ensure in **configuration.h** file:
+```
+/**
+ * SD CARD
+ *
+ * SD Card support is disabled by default. If your controller has an SD slot,
+ * you must uncomment the following option or it won't work.
+ */
+#define SDSUPPORT   //this can be enabled or disabled to your wishes
+```
+Ensure in **configuration_adv.h** file:
+```
+  /**
+   * Set this option to one of the following (or the board's defaults apply):
+   *
+   *           LCD - Use the SD drive in the external LCD controller.
+   *       ONBOARD - Use the SD drive on the control board. (No SD_DETECT_PIN. M21 to init.)
+   *  CUSTOM_CABLE - Use a custom cable to access the SD (as defined in a pins file).
+   *
+   * :[ 'LCD', 'ONBOARD', 'CUSTOM_CABLE' ]
+   */
+  //#define SDCARD_CONNECTION LCD    //this is set for LCD like it is in the pins_BTT_SKR_V1_3.h file, just incase this get enabled. Leave it disabled for now
+```
+
+In **platformio.ini** file:
+```
+	default_envs = LPC1768
+under [features] section of platformio.ini file:
+	replace `MAX6675_._IS_MAX31865   = Adafruit MAX31865 library@~1.1.0` with
+	`MAX6675_._IS_MAX31865    = https://github.com/GadgetAngel/Adafruit-MAX31865-V1.1.0-Mod-M.git`
+use the latest bugfix-2.0.x branch of Marlin (this will only work with the latest bugfix-2.0.x branch)
+
+this is what the env:common_LPC needs to look like:
+
+[common_LPC]
+platform          = https://github.com/p3p/pio-nxplpc-arduino-lpc176x/archive/0.1.3.zip
+platform_packages = framework-arduino-lpc176x@^0.2.6
+board             = nxp_lpc1768
+lib_ldf_mode      = off
+lib_compat_mode   = strict
+extra_scripts     = ${common.extra_scripts}
+  Marlin/src/HAL/LPC1768/upload_extra_script.py
+src_filter        = ${common.default_src_filter} +<src/HAL/LPC1768> +<src/HAL/shared/backtrace>
+lib_deps          = ${common.lib_deps}
+  Servo
+custom_marlin.USES_LIQUIDCRYSTAL = LiquidCrystal@1.0.0
+custom_marlin.NEOPIXEL_LED = Adafruit NeoPixel=https://github.com/p3p/Adafruit_NeoPixel/archive/1.5.0.zip
+build_flags       = ${common.build_flags} -DU8G_HAL_LINKS -IMarlin/src/HAL/LPC1768/include -IMarlin/src/HAL/LPC1768/u8g 
+  # debug options for backtrace
+  #-funwind-tables
+  #-mpoke-function-name
+```
+
+in **pins_BTT_SKR_common.h** :
+
+Set TEMP_0_PIN to the CS pin you 
+selected. In the below example I choose
+the E1_RX_PIN P1_01.
+
+```
+#define TEMP_0_PIN P1_01
+#define UNUSED2_PIN    P1_0    //this is an unused pin
+#define MAX6675_SS_PIN  UNUSED2_PIN   //forces Software SPI to be used
+#define MAX31865_CS_PIN TEMP_0_PIN
+#define MAX6675_SCK_PIN   P0_00
+#define MAX6675_DO_PIN    P0_01
+#define MAX31865_MOSI_PIN P0_02 
+```
+
+NOTE: Since we are using EXP1 and EXP2 for 
+our display screen all the PINS located on
+EXP1 and EXP2 that are in yellow boxes are
+no longer available for CS, SCLK, MOSI or MISO
+PIN selection.
+
+in **configuration_adv.h** file:
+```
+In configuration_adv.h file:
+#define MONITOR_DRIVER_STATUS
+#define TMC_DEBUG
+#define SHOW_TEMP_ADC_VALUES
+#define MAX_CONSECUTIVE_LOW_TEMPERATURE_ERROR_ALLOWED 10
+```
+
+I chose to use a BTT TFT35 E3 V3.0 screen and connect up the EXP1 and EXP2 cables to the SKR V1.3 board.  I left the TFT connector unplugged.
+
+**In configuration.h for the SKR V1.3 board**:
+```	
+#define SERIAL_PORT -1
+//#define SERIAL_PORT_2 0  //notice this is disabled
+#define BAUDRATE 115200
+#define MOTHERBOARD BOARD_BTT_SKR_V1_3
+#define EXTRUDERS 1
+#define TEMP_SENSOR_0 -5
+#define SDSUPPORT  //notice this is enabled or it can be disabled
+                   
+#define REPRAP_DISCOUNT_FULL_GRAPHIC_SMART_CONTROLLER //notice this 
+                                                      //is enabled
+//#define CR10_STOCKDISPLAY //notice this is disabled
+```
 
 ### AND {
 
@@ -870,7 +964,7 @@ For **Marlin 2.0.7.1** or earlier version of Marlin:
 
 **OR**
 
-For **Marlin 2.0.7.2**:
+For **Marlin 2.0.7.2 versions**:
 **ENABLE** the following in **configuration.h** file or **ADD** the following lines to **configuration.h** file: 
 ```
 #define MAX31865_SENSOR_OHMS 100
@@ -884,158 +978,21 @@ For **Marlin bugfix-2.0.x version or later versions of Marlin**:
 ```
 #define MAX31865_SENSOR_OHMS_0 100
 #define MAX31865_CALIBRATION_OHMS_0 430
-// enable the below two lines if you have a MAX31865 on TEMP_SENSOR_1
 //#define MAX31865_SENSOR_OHMS_1 100
 //#define MAX31865_CALIBRATION_OHMS_1 430
 
 ```
 ### }
 
-Here is a wiring diagram for a PT100 sensor with an Adafruit MAX31865 using Software SPI:
-14.++++++++++++++++++++++++++++++EXAMPLE 1+++++++++++++++++++++++++++++
+Here is the wiring diagram for the Adafruit **MAX31865 with PT100 via Software SPI for the SKR V1.3 board**: 
 
-![One PT100s with One MAX31865 boards in Software  SPI on SKR PRO V1 2_V1 1 board _ Instructions and Wiring Diagram](https://user-images.githubusercontent.com/33468777/95708399-1d9e3780-0c2a-11eb-937f-74190336568c.jpg)
+You can click on the below image and the browser will download the .jpg file or you can click on this URL address: https://github.com/GadgetAngel/MAX31865-SKR-V1-3-GUIDE/blob/main/images/One%20PT100%20with%20One%20MAX31865%20boards%20in%20Software%20SPI%20on%20SKR%20V1.3%20board%20_%20Wiring%20Diagram%20Part7.jpg
 
----
+**All the YELLOW boxes on the SKR V1.3 board are possible digital I/O pins that are available to use depending on what you have set in the Marlin firmware**. _The NOTES indicate when the PINS are available and when they are NOT available for use._
 
-14.++++++++++++++++++++++++++++++EXAMPLE 2+++++++++++++++++++++++++++++
-
-Here are **two** wiring diagrams for a **PT100 sensor with an Adafruit MAX31865 using Software SPI or Hardware SPI** for **SKR MINI E3 V2.0** board.  The PINS in the YELLLOW boxes are what I call "available and free" I/O PINS that you, as a Marlin User, can controller (you can use these pins for MOSI, MISO, SCK, or CS when performing Software SPI; or you can use these pins for CS when performing Hardware SPI) :
-
-![One PT100 with One MAX31865 boards in Hardware or Software  SPI on SKR MINI E3 V2 0 board _ Instructions and Wiring Diagram](https://user-images.githubusercontent.com/33468777/103141676-b4c14a00-46c5-11eb-9dda-c872b7f91335.jpg)
-
-Here is the sharable link to the above two diagrams for the SKR MINI E3 V2.0 (from my google drive with Highest resolution): https://drive.google.com/file/d/1bxzppVMYMMVOKphN8VXloUyU29sKJNim/view?usp=sharing
-
----
-
-14.++++++++++++++++++++++++++++++EXAMPLE 3+++++++++++++++++++++++++++++
-
-Here are **two** wiring diagrams for a **PT100 sensor with an Adafruit MAX31865 using Software SPI or Hardware SPI** for **SKR E3 TURBO** board.  The PINS in the YELLLOW boxes are what I call "available and free" I/O PINS that you, as a Marlin User, can controller (you can use these pins for MOSI, MISO, SCK, or CS when performing Software SPI; or you can use these pins for CS when performing Hardware SPI) :
-
-![One PT100 with One MAX31865 boards in Hardware or Software  SPI on SKR E3 TURBO board _ Instructions and Wiring Diagram](https://user-images.githubusercontent.com/33468777/103162177-27602180-47bb-11eb-8d15-ef2035f9d13c.jpg)
-
-Here is the sharable link to the above two diagrams for the SKR E3 TURBO (from my google drive with Highest resolution): 
-https://drive.google.com/file/d/14lYGDR4BFCD9Fpatdr7AAuQ9NlWYb1SU/view?usp=sharing
-
----
-
-# The information in [1, 11, 15-20] are for the MAX31855 board (thermocouples)
-
----
-
-15. If you want to use a **K-Type Thermocouple** temperature sensor with the **MAX31855 board over SPI** you have two options:
-     A. Software SPI (where the MCU performs the handshake in software)
-     B. Hardware SPI (where the MCU performs the handshake with hardware interrupts).
-
----
-
-16. If you want to use the **Hardware SPI** for **MAX31855**, then you have to know which SPI bus on the MCU board is the **default hardware SPI bus** (SPI Bus 1 or SPI Bus 2) due to the fact that there's **ONLY ONE hardware SPI bus** for each MCU board.  **See section 11** to find out how to determine the default hardware SPI bus for BTT SKR boards.   
-
----
-## Hardware SPI for MAX31855 board (Thermocouple)
-
-17. If you want to use **Hardware SPI** for **MAX31855 (for thermocouple)** then you must know which SPI bus will be the default hardware SPI bus for the board.  For the SKR PRO V1.1 the default hardware SPI bus is EXP2.  For GTR V1.0 board the default hardware SPI bus is the onboard micro SD card reader.  You have to find a way to access the default hardware SPI bus' MISO and SCK lines.  To access these lines for the SKR PRO V1.1/V1.2 board use a clamp-on flat ribbon cable  connector (https://www.digikey.com/product-detail/en/te-connectivity-amp-connectors/1658622-1/AKC10B-ND/825411).  
-
-To **access the hardware SPI lines for the GTR V1.0 board use Bigtreetech's TF cloud device** and hack the pins off the ESP12-S chip (https://www.amazon.com/BIGTREETECH-Direct-Wireless-Transmission-Motherboard/dp/B088WB5L8R).  Now all you need is one free I/O pin to specify the Chip Select for the MAX31855.  
-
-+++++++++++++++++++++++++++++++++++++EXAMPLE++++++++++++++++++++++++++++++++++++
-
-Below is a example of how to get **Hardware SPI** to work on **SKR PRO V1.1/V1.2** **for MAX31855** (thermocouple sensor), make the following changes in **pins_BTT_SKR_PRO_common.h**:
-```
-#define TEMP_0_PIN  PD0
-#ifndef MAX6675_SS_PIN
-	#define MAX6675_SS_PIN TEMP_0_PIN   
-#endif
-```
-**In configuration.h**:
-```
-	set TEMP_SENSOR_0 to -3
-```
-
----
-
-18. If you want to use **Hardware SPI** for **MAX31855 (for thermocouple)** AND you want to use **TWO thermocouples**, one attached to E0 and the other thermocouple attached to E1 (two MAX31855 amplifier boards), then the **MAX31855 Clock Line and MAX31855 Data Output Line** _** MUST be shared by both MAX31855 amplifier boards AND MUST be tied to the default hardware SPI bus for the MCU board**_.  
-
-In this example let us use the **SKR PRO V1.1/V1.2 board** as the MCU board.  We want **two MAX31855 boards** to use hardware SPI for the two thermocouples. Here is how you would setup Marlin:
-
-```
-#define TEMP_0_PIN        PE2
-#define TEMP_1_PIN        PE4
-#ifndef MAX6675_SS_PIN
-	#define MAX6675_SS_PIN      TEMP_0_PIN   
-	#define MAX6675_SS2_PIN      TEMP_1_PIN
-#endif
-```
-**In configuration.h**:
-```
-	set TEMP_SENSOR_0 to -3
-        set TEMP_SENSOR_1 to -3
-```
-
-
-Here is a wiring diagram [number 18] for two MAX31855 boards in hardware SPI for the SKR PRO V1.1/V1.2 board:
-
-![Two K-Type Thermocouples with Two MAX31855 boards in Hardware  SPI on SKR PRO V1 2_V1 1 board _ Instructions and Wiring Diagram](https://user-images.githubusercontent.com/33468777/95704414-baf36e80-0c1e-11eb-9909-ed9851ca9d28.jpg)
-
----
-
-## To Prevent a noisy Thermocouple temperature sensor:
-
-![G_Thermocouple_Prevent_a_Noisy_Thermocouple_MAX31855 board](https://user-images.githubusercontent.com/33468777/95704548-348b5c80-0c1f-11eb-8be9-5681c792ad9a.jpg)
-
-URL1: https://learn.adafruit.com/thermocouple/f-a-q#faq-2958381
-URL2: https://3dprinting.stackexchange.com/questions/204/how-to-get-consistent-and-accurate-readings-from-thermocouples/355#355
-
----
-## Software SPI for MAX31855 board (Thermocouples)
-
-19. If you want to use **Software SPI** for **MAX31855 (for ONE thermocouple)** then do the following:
-
-- **use the Marlin variables for MAX6675: (MAX6675_SS_PIN, MAX6675_DO_PIN, MAX6675_SCK_PIN)**
-- **MUST use** MAX6675_DO_PIN as the variable for MISO 
-- **MUST use** MAX6675_SCK_PIN as the variable for SCK
-- **MUST set MAX6675_SS_PIN as the pin to be used as the chip select pin on MAX31855**
-- Either set MAX6675_SS_PIN equal to TEMP_0_PIN or just use the same PIN number in both variables
-
-Below is a sample of how to get **Software SPI** to work on **SKR PRO V1.1/V1.2** **for MAX31855** (thermocouple sensor), make the following changes in **pins_BTT_SKR_PRO_common.h**:
-```
-#define TEMP_0_PIN  PD0
-#ifndef MAX6675_SS_PIN
-	#define MAX6675_SS_PIN TEMP_0_PIN
-	#define MAX6675_DO_PIN PD5
-	#define MAX6675_SCK_PIN PE0
-#endif
-```
-**In configuration.h**:
-`	set TEMP_SENSOR_0 to -3`
-
----
-
-20. If you want to use **Software SPI** for **MAX31855 (for thermocouple)** AND you want to use **TWO thermocouples**, one attached to E0 and the other thermocouple attached to E1(two MAX31855 amplifiers), then the **MAX31855 Clock Line and MAX31855 Data Output Line** _**MUST  be shared by both MAX31855 amplifier boards**_.
-
-- If you have a **MCU like the GTR V1.0 board**, which already has a MAX31855 built into the board (I will call this ONBOARD_MAX31855), then to use the **GTR V1.0 board with an external MAX31855** you MUST use the Clock Line (SCK) and Data Output Line (DO)  of the ONBOARD_MAX31855 PINs defined in **pins_BTT_GTR_V1_0.h** file. This would mean you have to tie the second (external) MAX31855 amplifier board to the M5 connector of the GTR V1.0 board so that you gain access to the DO and SCK lines of the ONBOARD_MAX31855 chip.
-
-For example, here is how you would **setup using two thermocouples with the GTR V1.0 board**:
-```
-#define TEMP_0_PIN   PH9    //CS for ONBOARD MAX31855 chip, See NOTE below
-#define TEMP_1_PIN   PH13  //CS for external MAX31855 amplifier board
-#ifndef MAX6675_SS_PIN
-     #define MAX6675_SS_PIN            TEMP_0_PIN     //for first Thermocouple
-     #define MAX6675_SS2_PIN           TEMP_1_PIN    //for second Thermocouple 
-     #define MAX6675_SCK_PIN           PI1
-     #define MAX6675_DO_PIN            PI2
-#endif
-```
-**In configuration.h**:
-`	set TEMP_SENSOR_0 to -3` and `set TEMP_SENSOR_1 to -3`
-
-**NOTE: the first thermocouple is wired to the ONBOARD K_Type Thermocouple (KTEM) connector.  That KTEM connector by default uses PH9 as its Chip select pin.  The first thermocouple is not shown in the wiring diagram.**
-
-Here is a wire diagram for this situation:
-
-![2nd_TC_MAX31855_Software_SPI_Technique#1andMethod#1_Page_146](https://user-images.githubusercontent.com/33468777/95705242-4ff76700-0c21-11eb-8028-6a3788afa6d4.jpg)
-
+<img src="https://raw.githubusercontent.com/GadgetAngel/MAX31865-SKR-V1-3-GUIDE/main/images/One%20PT100%20with%20One%20MAX31865%20boards%20in%20Software%20SPI%20on%20SKR%20V1.3%20board%20_%20Wiring%20Diagram%20Part7.jpg?raw=true" />
 
 ---
 
 END OF GUIDE
+
