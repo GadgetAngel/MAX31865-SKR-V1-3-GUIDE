@@ -61,13 +61,13 @@ LCD_PINS_RS is Register select (command/data) or software SPI signal SS for EXP1
 
 <img src="https://raw.githubusercontent.com/GadgetAngel/MAX31865-SKR-V1-3-GUIDE/main/images/Overvoltage%20Protection%20Block.jpg?raw=true" />
 
-The below wiring diagram for PT100 using Analog ADC input using 5V DC for the PT100 amplifier board but the MCU board (GTR V1.0) uses 3.3 VDC ADC reference voltage, therefore the Thermistor table to use for this is Table 21:
+The below wiring diagram for PT100 using Analog ADC input using 5V DC for the PT100 amplifier board but the MCU board (SKR V1.3 board) uses 3.3 VDC ADC reference voltage, therefore the Thermistor table to use for this is Table 21:
 
-![g_PT100_Technique#2_Method#1_PF8_wiring_diagram_Page_27](https://user-images.githubusercontent.com/33468777/95801623-dd41c680-0cc8-11eb-9292-3419e5b19ad1.jpg)
+<img src="https://raw.githubusercontent.com/GadgetAngel/MAX31865-SKR-V1-3-GUIDE/main/images/PT100%20Analog%20hook%20up%20with%205VDC%20power.jpg?raw=true" />
 
-The below wiring diagram for PT100 using Analog ADC input using 3.3 VDC for the PT100 amplifier board but the MCU board (GTR V1.0 board) uses 3.3 VDC ADC reference voltage, therefore the Thermistor table to use for this is Table 20 (see the process data sheet and you will find that PF10 need protection against negative current injection,https://www.st.com/resource/en/datasheet/stm32f407ig.pdf#page=114):
+The below wiring diagram for PT100 using Analog ADC input using 3.3 VDC for the PT100 amplifier board but the MCU board (SKR V1.3 board) uses 3.3 VDC ADC reference voltage, therefore the Thermistor table to use for this is Table 20 (see the process data sheet and you will find that PF10 need protection against negative current injection,https://www.st.com/resource/en/datasheet/stm32f407ig.pdf#page=114):
 
-![G_PT100_Technique#4_Method#1_PF10_wiring_diagram_Page_29](https://user-images.githubusercontent.com/33468777/95801682-2134cb80-0cc9-11eb-8bab-7c3334ee8638.jpg)
+<img src="https://raw.githubusercontent.com/GadgetAngel/MAX31865-SKR-V1-3-GUIDE/main/images/PT100%20Analog%20hook%20up%20with%203.3VDC%20power.jpg?raw=true" />
 
 
 ---
