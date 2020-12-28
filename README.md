@@ -169,7 +169,9 @@ to
 ---
 
 9. If you want to use **PT100** temperature sensor with the **Adafruit MAX31865 over SPI** you have two options:
+
      A. Software SPI (where the MCU performs the handshake in software)
+     
      B. Hardware SPI (where the MCU performs the handshake with hardware interrupts).
 
 10. If you want to use the **Hardware SPI** for Adafruit MAX31865, then you have to know which SPI bus on the MCU board is the **default hardware SPI bus** (SPI Bus 0 or SPI Bus 1 or SPI Bus 2) due to the fact that the Adafruit MAX31865 Library will default to this bus (Adafruit MAX31865 library does not expose the bus number, so it just defaults). 
