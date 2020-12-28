@@ -102,7 +102,13 @@ In **configuration.h** file:
 #define MAX31865_CALIBRATION_OHMS 430
 ```
 
-4C. **For Marlin bugfix-2.0.x branch or later versions of Marlin**:  If you want to use the Adafruit MAX31865 boards **with a PT100**, you MUST use the Marlin variables in the **configuration.h** file to adjust the sensor resistance ohm value and calibration resistance ohm value as shown below.   Use the Marlin variables **instead of making the changes in the Marlin software in temperature.cpp** as stated in 4A. If you only have one (1) Adafruit MAX31865 board than use the Marlin variable MAX31865_SENSOR_OHMS_0 and Marlin variable MAX31865_CALIBRATION_OHMS_0 **only** (disable MAX31865_SENSOR_OHMS_1 and disable MAX31865_CALIBRATION_OHMS_1). If you have two (2) Adafruit MAX31865 boards then enable all four Marlin variables: MAX31865_SENSOR_OHMS_0, MAX31865_CALIBRATION_OHMS_0, MAX31865_SENSOR_OHMS_1, and  MAX31865_CALIBRATION_OHMS_1.
+4C. **For Marlin bugfix-2.0.x branch or later versions of Marlin**:  If you want to use the Adafruit MAX31865 boards **with a PT100**, you MUST use the Marlin variables in the **configuration.h** file to adjust the sensor resistance ohm value and calibration resistance ohm value as shown below.   
+
+Use the Marlin variables **instead of making the changes in the Marlin software in temperature.cpp** as stated in 4A. 
+
+If you only have one (1) Adafruit MAX31865 board than use the Marlin variable MAX31865_SENSOR_OHMS_0 and Marlin variable MAX31865_CALIBRATION_OHMS_0 **only** (disable MAX31865_SENSOR_OHMS_1 and disable MAX31865_CALIBRATION_OHMS_1). 
+
+If you have two (2) Adafruit MAX31865 boards then enable all four Marlin variables: MAX31865_SENSOR_OHMS_0, MAX31865_CALIBRATION_OHMS_0, MAX31865_SENSOR_OHMS_1, and  MAX31865_CALIBRATION_OHMS_1.
 
 In **configuration.h** file:
 
@@ -137,7 +143,13 @@ In **configuration.h** file:
 #define MAX31865_CALIBRATION_OHMS 4300
 ```
 
-5C. **For Marlin bugfix-2.0.x branch or later versions of Marlin**:  If you want to use the Adafruit MAX31865 boards **with a PT1000**, you MUST use the Marlin variables in the **configuration.h** file to adjust the sensor resistance ohm value and calibration resistance ohm value as shown below.   Use the Marlin variables **instead of making the changes in the Marlin software in temperature.cpp** as stated in 5A. If you only have one (1) Adafruit MAX31865 board than use the Marlin variable MAX31865_SENSOR_OHMS_0 and Marlin variable MAX31865_CALIBRATION_OHMS_0 **only** (disable MAX31865_SENSOR_OHMS_1 and disable MAX31865_CALIBRATION_OHMS_1). If you have two (2) Adafruit MAX31865 boards then enable all four Marlin variables: MAX31865_SENSOR_OHMS_0, MAX31865_CALIBRATION_OHMS_0, MAX31865_SENSOR_OHMS_1, and  MAX31865_CALIBRATION_OHMS_1.
+5C. **For Marlin bugfix-2.0.x branch or later versions of Marlin**:  If you want to use the Adafruit MAX31865 boards **with a PT1000**, you MUST use the Marlin variables in the **configuration.h** file to adjust the sensor resistance ohm value and calibration resistance ohm value as shown below.   
+
+Use the Marlin variables **instead of making the changes in the Marlin software in temperature.cpp** as stated in 5A. 
+
+If you only have one (1) Adafruit MAX31865 board than use the Marlin variable MAX31865_SENSOR_OHMS_0 and Marlin variable MAX31865_CALIBRATION_OHMS_0 **only** (disable MAX31865_SENSOR_OHMS_1 and disable MAX31865_CALIBRATION_OHMS_1). 
+
+If you have two (2) Adafruit MAX31865 boards then enable all four Marlin variables: MAX31865_SENSOR_OHMS_0, MAX31865_CALIBRATION_OHMS_0, MAX31865_SENSOR_OHMS_1, and  MAX31865_CALIBRATION_OHMS_1.
 
 In **configuration.h** file:
 
@@ -162,7 +174,8 @@ You need to **solder two bridges** on the MAX31865 board.  Marlin will only read
 
 ---
 
-7. If you want to use the Adafruit MAX31865 board for PT100 sensor or PT1000 sensor with your SKR V1.3 board then **ENSURE that the Adafruit MAX31865 library is my modified Adafruit MAX31865 library called Adafruit-MAX31865-V1.1.0-Mod-M** by doing the following:
+7. If you want to use the Adafruit MAX31865 board for PT100 sensor or PT1000 sensor with your SKR V1.3 board then **ENSURE that the Adafruit MAX31865 library is _my modified Adafruit MAX31865 library_ called Adafruit-MAX31865-V1.1.0-Mod-M** by doing the following:
+
 Check that in **platformio.ini file** the following line exists in [common] under `lib_deps           =` and feature dependencies `[features]`:
 `MAX6675_._IS_MAX31865     = Adafruit MAX31865 library@~1.1.0`
 
