@@ -656,6 +656,7 @@ You can click on the below image and the browser will download the .jpg file or 
 **All the YELLOW boxes on the SKR V1.3 board are possible digital I/O pins that are available to use depending on what you have set in the Marlin firmware**. _The NOTES indicate when the PINS are available and when they are NOT available for use._
 
 <img src="https://raw.githubusercontent.com/GadgetAngel/MAX31865-SKR-V1-3-GUIDE/main/images/One%20PT100%20with%20One%20MAX31865%20boards%20in%20Hardware%20SPI%20with%20SD%20card%20reader%20on%20SKR%20V1.3%20board%20_%20Wiring%20Diagram%20Part4.jpg?raw=true" />
+
 ---
 
 ### If you have 2 (two) Adafruit MAX31865 (for PT100/PT1000) boards you want to wire up to your 3D Printer, this is now been fixed in Marlin bugfix-2.0.x branch.  **So the release branch of Marlin 2.0.7.2 DOES NOT allow two Adafruit MAX31865 boards to work properly BUT the bugfix-2.0.x branch has fixed the issue.  I am sure Marlin 2.0.7.3 will also fix the issue.**
