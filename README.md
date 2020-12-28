@@ -316,8 +316,7 @@ JSER Micro SD TF Memory Card Kit Male to Female Extension Adapter (https://www.a
 
 12. If you want to use **Hardware SPI** for **Adafruit MAX31865 (for PT100 or PT1000)** then you must know which SPI bus will be the default hardware SPI bus for the board.  For the SKR V1.3 board the default hardware SPI bus is EXP2.  You have to find a way to access the default hardware SPI bus' MOSI, MISO and SCK lines.  To access these lines for the SKR V1.3 board, use a clamp-on flat ribbon cable connector (https://www.digikey.com/product-detail/en/te-connectivity-amp-connectors/1658622-1/AKC10B-ND/825411). 
 
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-![Default Hardware SPI Hack info Block](https://user-images.githubusercontent.com/33468777/94368385-bcb32300-00b1-11eb-8fcb-ae5aefcd6e1e.jpg)
+<img src="https://raw.githubusercontent.com/GadgetAngel/MAX31865-SKR-V1-3-GUIDE/main/images/Default%20Hardware%20SPI%20Hack%20info%20Block%20for%20SKR%20V1.3.jpg?raw=true" />
 
 ++++++++++++++++++++++++++++++++**EXAMPLE 1**+++++++++++++++++++++++++++++++++++
 
