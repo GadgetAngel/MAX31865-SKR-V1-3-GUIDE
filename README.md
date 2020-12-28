@@ -661,25 +661,130 @@ You can click on the below image and the browser will download the .jpg file or 
 
 ### If you have 2 (two) Adafruit MAX31865 (for PT100/PT1000) boards you want to wire up to your 3D Printer, this is now been fixed in Marlin bugfix-2.0.x branch.  **So the release branch of Marlin 2.0.7.2 DOES NOT allow two Adafruit MAX31865 boards to work properly BUT the bugfix-2.0.x branch has fixed the issue.  I am sure Marlin 2.0.7.3 will also fix the issue.**
 
-13.   If you want **Adafruit MAX31865 (for PT100)** AND you want to use **TWO PT100 sensors**, one attached to E0 and the other PT100 attached to E1 (two MAX31865 amplifiers), then the **MAX31865 SPI Clock Line and MAX31865 SPI MOSI line and MAX31865 SPI MISO line** _**MUST  be shared by both MAX31865 amplifier boards**_ .  For the SKR PRO V1.1/V1.2 the default hardware SPI bus is EXP2 or SPI bus number 2.  You need to use a flat ribbon cable clamp tap to access the hardware SPI line on EXP2. You can find one at https://www.digikey.com/product-detail/en/te-connectivity-amp-connectors/1658622-1/AKC10B-ND/825411
+13.   If you want **Adafruit MAX31865 (for PT100)** AND you want to use **TWO PT100 sensors**, one attached to E0 and the other PT100 attached to E1 (two MAX31865 amplifiers), then the **MAX31865 SPI Clock Line and MAX31865 SPI MOSI line and MAX31865 SPI MISO line** _**MUST  be shared by both MAX31865 amplifier boards**_ .  For the SKR V1.3 board the default hardware SPI bus is EXP2 or SPI bus number 0.  You need to use a flat ribbon cable clamp tap to access the hardware SPI line on EXP2. You can find one at https://www.digikey.com/product-detail/en/te-connectivity-amp-connectors/1658622-1/AKC10B-ND/825411
 
-Below is a sample of how to get **TWO PT100s** in **Hardware SPI** to work on **SKR PRO V1.1/v1.2 board** by using **TWO Adafruit MAX31865 boards** , make the following changes in **pins_BTT_SKR_PRO_common.h**:
+To setup Marlin **on SKR V1.3 board** for **2 Adafruit MAX31865** and **Hardware SPI which occurs on the EXP2 connector**, do the following:
+
+Ensure in **pins_BTT_SKR_V1_3.h** file:
 ```
-#define TEMP_0_PIN                   PE2
-#define TEMP_1_PIN                   PE4
-#ifndef MAX31865_CS_PIN
-	#define MAX6675_SS_PIN      TEMP_0_PIN
-        // force Hardware SPI by making  MAX31865_CS_PIN equal to MAX6675_SS_PIN
-	#define MAX31865_CS_PIN     MAX6675_SS_PIN     
-        #define MAX6675_SS2_PIN     TEMP_1_PIN
-        // force Hardware SPI by making  MAX31865_CS2_PIN equal to MAX6675_SS2_PIN
-	#define MAX31865_CS2_PIN    MAX6675_SS2_PIN
+//
+// SD Support
+//
+
+#ifndef SDCARD_CONNECTION
+  #define SDCARD_CONNECTION                  LCD
 #endif
 ```
-**In configuration.h**:
+Ensure in **configuration.h** file:
+```
+/**
+ * SD CARD
+ *
+ * SD Card support is disabled by default. If your controller has an SD slot,
+ * you must uncomment the following option or it won't work.
+ */
+#define SDSUPPORT   //this can be enabled or disabled to your wishes
+```
+Ensure in **configuration_adv.h** file:
+```
+  /**
+   * Set this option to one of the following (or the board's defaults apply):
+   *
+   *           LCD - Use the SD drive in the external LCD controller.
+   *       ONBOARD - Use the SD drive on the control board. (No SD_DETECT_PIN. M21 to init.)
+   *  CUSTOM_CABLE - Use a custom cable to access the SD (as defined in a pins file).
+   *
+   * :[ 'LCD', 'ONBOARD', 'CUSTOM_CABLE' ]
+   */
+  //#define SDCARD_CONNECTION LCD    //this is set for LCD like it is in the pins_BTT_SKR_V1_3.h file, just incase this get enabled. Leave it disabled for now
+```
+
+In **platformio.ini** file:
+```
+	default_envs = LPC1768
+under [features] section of platformio.ini file:
+	replace `MAX6675_._IS_MAX31865   = Adafruit MAX31865 library@~1.1.0` with
+	`MAX6675_._IS_MAX31865    = https://github.com/GadgetAngel/Adafruit-MAX31865-V1.1.0-Mod-M.git`
+use the latest bugfix-2.0.x branch of Marlin (this will only work with the latest bugfix-2.0.x branch)
+
+this is what the env:common_LPC needs to look like:
+
+[common_LPC]
+platform          = https://github.com/p3p/pio-nxplpc-arduino-lpc176x/archive/0.1.3.zip
+platform_packages = framework-arduino-lpc176x@^0.2.6
+board             = nxp_lpc1768
+lib_ldf_mode      = off
+lib_compat_mode   = strict
+extra_scripts     = ${common.extra_scripts}
+  Marlin/src/HAL/LPC1768/upload_extra_script.py
+src_filter        = ${common.default_src_filter} +<src/HAL/LPC1768> +<src/HAL/shared/backtrace>
+lib_deps          = ${common.lib_deps}
+  Servo
+custom_marlin.USES_LIQUIDCRYSTAL = LiquidCrystal@1.0.0
+custom_marlin.NEOPIXEL_LED = Adafruit NeoPixel=https://github.com/p3p/Adafruit_NeoPixel/archive/1.5.0.zip
+build_flags       = ${common.build_flags} -DU8G_HAL_LINKS -IMarlin/src/HAL/LPC1768/include -IMarlin/src/HAL/LPC1768/u8g 
+  # debug options for backtrace
+  #-funwind-tables
+  #-mpoke-function-name
+```
+
+in **pins_BTT_SKR_common.h** :
+
+Set TEMP_0_PIN to the CS pin you 
+selected. In the below example I choose
+the EXP2 PIN P0_16, and for the second board
+I choose EXP2 PIN P1_31.
+
+```
+#define TEMP_0_PIN P0_16
+#define TEMP_1_PIN P1_31
+#define MAX6675_SS_PIN  TEMP_0_PIN
+#define MAX31865_CS_PIN MAX6675_SS_PIN            //force hardware spi
+//uncomment the next 2 lines if you have 2 boards
+#define MAX6675_SS2_PIN   TEMP_1_PIN
+#define MAX31865_CS2_PIN MAX6675_SS2_PIN          //force hardware spi
+```
+
+NOTE: Since the default Hardware SPI bus is now
+on the EXP1 and EXP2 connector the following PINS 
+are not available for CS pin selection:
+
+EXP2 PIN P0_15, this is the SPI SCK_PIN
+
+EXP2 PIN P0_17, this is the SPI MISO_PIN
+
+EXP2 PIN P0_18, this is the SPI MOSI_PIN
+
+EXP1 PIN P1_23, this is the SPI SS_PIN for the LCD screen’s SD card reader.
+
+in **configuration_adv.h** file:
+```
+In configuration_adv.h file:
+#define MONITOR_DRIVER_STATUS
+#define TMC_DEBUG
+#define SHOW_TEMP_ADC_VALUES
+#define MAX_CONSECUTIVE_LOW_TEMPERATURE_ERROR_ALLOWED 10
+```
+
+You will be using an TFT screen from BTT. It can be any TFT screen you like but the only requirement is that the **TFT screen can run with the RS232 connector only**.  Most 
+of the BTT TFT screens can run with only the TFT connector (or RS232, this limits the screen to using only the TFT screen or touch mode, _the simulated 12864 LCD Marlin mode will NOT be available to you_).
+
+**In configuration.h for the SKR V1.3 board**:
 ```	
-set TEMP_SENSOR_0 to -5 
-set TEMP_SENSOR_1 to -5
+#define SERIAL_PORT -1
+#define SERIAL_PORT_2 0
+#define BAUDRATE 115200
+#define MOTHERBOARD BOARD_BTT_SKR_V1_3
+#define EXTRUDERS 1
+#define TEMP_SENSOR_0 -5
+#define TEMP_SENSOR_1 -5
+#define SDSUPPORT  //notice this is enabled or 
+                   //it can also be disabled
+                   
+//#define REPRAP_DISCOUNT_FULL_GRAPHIC_SMART_CONTROLLER //notice this 
+                                                        //is disabled
+//#define CR10_STOCKDISPLAY //notice this is disabled
+
 ```
 
 ### AND {
@@ -689,7 +794,7 @@ For **Marlin 2.0.7.1** or earlier version of Marlin:
 
 **OR**
 
-For **Marlin 2.0.7.2**:
+For **Marlin 2.0.7.2 versions**:
 **ENABLE** the following in **configuration.h** file or **ADD** the following lines to **configuration.h** file: 
 ```
 #define MAX31865_SENSOR_OHMS 100
@@ -709,9 +814,15 @@ For **Marlin bugfix-2.0.x version or later versions of Marlin**:
 ```
 ### }
 
-Here is the wiring diagram for the above example [number 13] (for 2 PT100s with 2 MAX31865 in Hardware SPI mode):
+Here is the wiring diagram for the Adafruit **2 MAX31865 with 2 PT100 via Hardware SPI on EXP2 connector for the SKR V1.3 board**.  To access the Hardware SPI lines for the SKR V1.3 board, you need to **tap into the EXP2 flat ribbon cable** use: 
+https://www.digikey.com/product-detail/en/te-connectivity-amp-connectors/1658622-1/AKC10B-ND/825411
+Orient the clamp on connector so that it is in the same orientation as the one already installed on the end of the flat ribbon cable that gets plugged into the EXP2 socket of the SKR V1.3 board. This way you will be able to keep straight which PINs are which. I oriented mine to be upside down just like the connector that is already on the end that plugs into the EXP2 socket of the SKR V1.3 board. Now all you need is one free I/O pin to specify the Chip Select for the MAX31865.
 
-![Two PT100s with Two MAX31865 boards in Hardware  SPI on SKR PRO V1 2_V1 1 board _ Instructions and Wiring Diagram_V2](https://user-images.githubusercontent.com/33468777/95189216-92d9ba80-079b-11eb-8fd0-645bb01c1db1.jpg)
+You can click on the below image and the browser will download the .jpg file or you can click on this URL address: https://github.com/GadgetAngel/MAX31865-SKR-V1-3-GUIDE/blob/main/images/TWO%20PT100%20with%20TWO%20MAX31865%20boards%20in%20Hardware%20SPI%20with%20EXP2%20on%20SKR%20V1.3%20board%20_%20Wiring%20Diagram%20Part8.jpg
+
+**All the YELLOW boxes on the SKR V1.3 board are possible digital I/O pins that are available to use depending on what you have set in the Marlin firmware**. _The NOTES indicate when the PINS are available and when they are NOT available for use._
+
+<img src="https://raw.githubusercontent.com/GadgetAngel/MAX31865-SKR-V1-3-GUIDE/main/images/TWO%20PT100%20with%20TWO%20MAX31865%20boards%20in%20Hardware%20SPI%20with%20EXP2%20on%20SKR%20V1.3%20board%20_%20Wiring%20Diagram%20Part8.jpg?raw=true" />
 
 
 ---
