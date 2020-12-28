@@ -73,7 +73,7 @@ The below wiring diagram for PT100 using Analog ADC input using 3.3 VDC for the 
 
 ---
 
-# The information contained in [1, 4-14] are for the Adafruit MAX31865 board (PT100/PT100 sensors)
+# The information contained in [1, 4-14] are for the Adafruit MAX31865 board (PT100/PT100 sensors) with the SKR V1.3 MCU board
 
 
 ---
@@ -150,7 +150,7 @@ You need to **solder two bridges** on the MAX31865 board.  Marlin will only read
 
 ---
 
-7. If you want to use the Adafruit MAX31865 board for PT100 sensor or PT1000 sensor then **ENSURE that the Adafruit MAX31865 library is my modified Adafruit MAX31865 library called Adafruit-MAX31865-V1.1.0-Mod-M** by doing the following:
+7. If you want to use the Adafruit MAX31865 board for PT100 sensor or PT1000 sensor with your SKR V1.3 board then **ENSURE that the Adafruit MAX31865 library is my modified Adafruit MAX31865 library called Adafruit-MAX31865-V1.1.0-Mod-M** by doing the following:
 Check that in **platformio.ini file** the following line exists in [common] under `lib_deps           =` and feature dependencies `[features]`:
 `MAX6675_IS_MAX31865     = Adafruit MAX31865 library@~1.1.0`
 
