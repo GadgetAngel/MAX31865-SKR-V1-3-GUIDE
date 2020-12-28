@@ -65,7 +65,7 @@ The below wiring diagram for PT100 using Analog ADC input using 5V DC for the PT
 
 <img src="https://raw.githubusercontent.com/GadgetAngel/MAX31865-SKR-V1-3-GUIDE/main/images/PT100%20Analog%20hook%20up%20with%205VDC%20power.jpg?raw=true" />
 
-The below wiring diagram for PT100 using Analog ADC input using 3.3 VDC for the PT100 amplifier board but the MCU board (SKR V1.3 board) uses 3.3 VDC ADC reference voltage, therefore the Thermistor table to use for this is Table 20 (see the process data sheet and you will find that PF10 need protection against negative current injection,https://www.st.com/resource/en/datasheet/stm32f407ig.pdf#page=114):
+The below wiring diagram for PT100 using Analog ADC input using 3.3 VDC for the PT100 amplifier board but the MCU board (SKR V1.3 board) uses 3.3 VDC ADC reference voltage, therefore the Thermistor table to use for this is Table 20:
 
 <img src="https://raw.githubusercontent.com/GadgetAngel/MAX31865-SKR-V1-3-GUIDE/main/images/PT100%20Analog%20hook%20up%20with%203.3VDC%20power.jpg?raw=true" />
 
