@@ -74,6 +74,11 @@ The below wiring diagram for PT100 using Analog ADC input using 3.3 VDC for the 
 
 # The information contained in [1, 4-14] are for the Adafruit MAX31865 board (PT100/PT100 sensors) with the SKR V1.3 MCU board
 
+You can click on the below image and the browser will download the .jpg file or you can click on this URL address: https://github.com/GadgetAngel/MAX31865-SKR-V1-3-GUIDE/blob/main/images/General%20Information%20for%20SKR%20V1.3%20board%20Part1.jpg
+
+**In the below diagram, all the PINS in Yellow boxes are available on the SKR V1.3 board for use as digital I/O pins that the Marlin user can manipulate (the NOTES tell you when a PIN is available and when it it NOT available:** 
+
+<img src="https://raw.githubusercontent.com/GadgetAngel/MAX31865-SKR-V1-3-GUIDE/main/images/General%20Information%20for%20SKR%20V1.3%20board%20Part1.jpg?raw=true" />
 
 ---
 
@@ -443,7 +448,7 @@ Here is the wiring diagram for the Adafruit **MAX31865 with PT100 via Hardware S
 https://www.digikey.com/product-detail/en/te-connectivity-amp-connectors/1658622-1/AKC10B-ND/825411
 Orient the clamp on connector so that it is in the same orientation as the one already installed on the end of the flat ribbon cable that gets plugged into the EXP2 socket of the SKR V1.3 board. This way you will be able to keep straight which PINs are which. I oriented mine to be upside down just like the connector that is already on the end that plugs into the EXP2 socket of the SKR V1.3 board. Now all you need is one free I/O pin to specify the Chip Select for the MAX31865.
 
-You can click on the below image and the browser will download the .jpg file or you can go to the URL address: https://github.com/GadgetAngel/MAX31865-SKR-V1-3-GUIDE/blob/main/images/One%20PT100%20with%20One%20MAX31865%20boards%20in%20Hardware%20SPI%20with%20EXP2%20on%20SKR%20V1.3%20board%20_%20Wiring%20Diagram%20Part5.jpg
+You can click on the below image and the browser will download the .jpg file or you can click on this URL address: https://github.com/GadgetAngel/MAX31865-SKR-V1-3-GUIDE/blob/main/images/One%20PT100%20with%20One%20MAX31865%20boards%20in%20Hardware%20SPI%20with%20EXP2%20on%20SKR%20V1.3%20board%20_%20Wiring%20Diagram%20Part5.jpg
 
 **All the YELLOW boxes on the SKR V1.3 board are possible digital I/O pins that are available to use depending on what you have set in the Marlin firmware**. _The NOTES indicate when the PINS are available and when they are NOT available for use._
 
@@ -451,9 +456,46 @@ You can click on the below image and the browser will download the .jpg file or 
 
 ++++++++++++++++++++++++++++++++**EXAMPLE 2**+++++++++++++++++++++++++++++++++++
 
-For **SKR PRO V1.1/V1.2 MCU board** you would have to tap into the **hardware SPI lines via the EXP2 connector**.
+For **SKR V1.3 MCU board where the default hardware SPI bus is on micro SD Card reader** you would have to tap into the **hardware SPI lines via the micro SD Card reader**.
 
-To setup Marlin for **Adafruit MAX31865** and **Hardware SPI**, on **SKR PRO V1.1/V1.2 board** do the following in **pins_BTT_SKR_PRO_common.h**:
+To setup Marlin for **Adafruit MAX31865** and **Hardware SPI**, on **SKR V1.3 board** in which the default hardware SPI bus is using the ONBOARD micro SD card reader do the following:
+
+set in **pins_BTT_SKR_V1_3.h** file:
+```
+//
+// SD Support
+//
+
+#ifndef SDCARD_CONNECTION
+  #define SDCARD_CONNECTION                  ONBOARD
+#endif
+```
+
+set in **configuration.h** file:
+```
+/**
+ * SD CARD
+ *
+ * SD Card support is disabled by default. If your controller has an SD slot,
+ * you must uncomment the following option or it won't work.
+ */
+#define SDSUPPORT   //this MUST be enabled!! //if it is disabled, then your default SPI bus will point to EXP2 connector
+```
+set in **configuration_adv.h** file:
+```
+  /**
+   * Set this option to one of the following (or the board's defaults apply):
+   *
+   *           LCD - Use the SD drive in the external LCD controller.
+   *       ONBOARD - Use the SD drive on the control board. (No SD_DETECT_PIN. M21 to init.)
+   *  CUSTOM_CABLE - Use a custom cable to access the SD (as defined in a pins file).
+   *
+   * :[ 'LCD', 'ONBOARD', 'CUSTOM_CABLE' ]
+   */
+  //#define SDCARD_CONNECTION ONBOARD    //this is set for ONBOARD like it is in the pins_BTT_SKR_V1_3.h file, just in case this get enabled. Leave it disabled for now
+```
+
+in **pins_BTT_SKR_PRO_common.h**:
 ```
 #define TEMP_0_PIN  PE2
 #ifndef MAX31865_CS_PIN
