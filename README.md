@@ -445,6 +445,8 @@ Orient the clamp on connector so that it is in the same orientation as the one a
 
 You can click on the below image and the browser will download the .jpg file or you can go to the URL address: https://github.com/GadgetAngel/MAX31865-SKR-V1-3-GUIDE/blob/main/images/One%20PT100%20with%20One%20MAX31865%20boards%20in%20Hardware%20SPI%20with%20EXP2%20on%20SKR%20V1.3%20board%20_%20Wiring%20Diagram%20Part5.jpg
 
+**All the YELLOW boxes on the SKR V1.3 board are possible digital I/O pins that are available to use depending on what you have set in the Marlin firmware**. _The NOTES indicate when the PINS are available and when they are NOT available for use._
+
 <img src="https://raw.githubusercontent.com/GadgetAngel/MAX31865-SKR-V1-3-GUIDE/main/images/One%20PT100%20with%20One%20MAX31865%20boards%20in%20Hardware%20SPI%20with%20EXP2%20on%20SKR%20V1.3%20board%20_%20Wiring%20Diagram%20Part5.jpg?raw=true" />
 
 ++++++++++++++++++++++++++++++++**EXAMPLE 2**+++++++++++++++++++++++++++++++++++
