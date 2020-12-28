@@ -297,7 +297,7 @@ For the **GTR V1.0 board the pins_BTT_GTR_V1_0.h contains the following**:
 Notice that for the GTR V1.0 board and SDSUPPORT enabled in configuration.h file, when Marlin executes, it will **first set the default hardware SPI bus number to SPI2 due to the fact that the variables in variant.h get read in first**.  Then the file **pins_BTT_GTR_V1_0.h** gets read and **it changes the default hardware SPI bus to SPI1**. This is due to the **Marlin variable "CUSTOM_SPI_PINS" and SDSUPPORT being enabled in configuration.h file**, which is used to **override** the variant.h file SPI Marlin variables.  
 
 ---
-## Additional Equipment that maybe necessary to obtain HARDWARE SPI for Adafruit MAX31865
+## Additional Equipment that maybe necessary to obtain HARDWARE SPI for Adafruit MAX31865 with the SKR V1.3 board (MCU board)
 
 11B.  As stated in the above table for default hardware SPI bus you might need additional equipment to tap into the default hardware SPI lines.  This section provides you links to find the extra equipment.
 
@@ -312,15 +312,16 @@ JSER Micro SD TF Memory Card Kit Male to Female Extension Adapter (https://www.a
 
 ---
 
-## HARDWARE SPI for Adafruit MAX31865
+## HARDWARE SPI for Adafruit MAX31865 and SKR V1.3 MCU board
 
 12. If you want to use **Hardware SPI** for **Adafruit MAX31865 (for PT100 or PT1000)** then you must know which SPI bus will be the default hardware SPI bus for the board.  For the SKR V1.3 board the default hardware SPI bus is EXP2.  You have to find a way to access the default hardware SPI bus' MOSI, MISO and SCK lines.  To access these lines for the SKR V1.3 board, use a clamp-on flat ribbon cable connector (https://www.digikey.com/product-detail/en/te-connectivity-amp-connectors/1658622-1/AKC10B-ND/825411). 
 
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ![Default Hardware SPI Hack info Block](https://user-images.githubusercontent.com/33468777/94368385-bcb32300-00b1-11eb-8fcb-ae5aefcd6e1e.jpg)
 
 ++++++++++++++++++++++++++++++++**EXAMPLE 1**+++++++++++++++++++++++++++++++++++
 
-To setup Marlin **on SKR V1.3 board** for **Adafruit MAX31865** and **Hardware SPI**, do the following:
+To setup Marlin **on SKR V1.3 board** for **Adafruit MAX31865** and **Hardware SPI which occurs on the EXP2 connector**, do the following:
 
 Ensure in **pins_BTT_SKR_V1_3.h** file:
 ```
@@ -358,13 +359,28 @@ Ensure in **configuration_adv.h** file:
 
 in **pins_BTT_SKR_common.h** :
 ```
-#define TEMP_0_PIN  P0_16
-#ifndef MAX31865_CS_PIN
-	#define MAX6675_SS_PIN TEMP_0_PIN
-        // force Hardware SPI by making  MAX31865_CS_PIN equal to MAX6675_SS_PIN
-	#define MAX31865_CS_PIN MAX6675_SS_PIN  
-#endif
+#define TEMP_0_PIN P0_16
+#define MAX6675_SS_PIN  TEMP_0_PIN
+#define MAX31865_CS_PIN MAX6675_SS_PIN
+//uncomment the next 2 lines if you have 2 boards
+//#define MAX6675_SS2_PIN   P1_31
+//#define MAX31865_CS2_PIN MAX6675_SS2_PIN 
 ```
+
+If you wanted two MAX31865 because you have two
+extruders on your printer I would use this 
+HARDWARE SPI setup and then use EXP2 PIN P1_31 
+as the CS2 for the second MAX31865 board. 
+
+NOTE: Since the default Hardware SPI bus is now
+on the EXP1 and EXP2 connector the following PINS 
+are not available for CS pin selection:
+
+EXP2 PIN P0_15, this is the SPI SCK_PIN
+EXP2 PIN P0_17, this is the SPI MISO_PIN
+EXP2 PIN P0_18, this is the SPI MOSI_PIN
+EXP1 PIN P1_23, this is the SPI SS_PIN for the LCD screen’s SD card reader.
+
 in **configuration_adv.h** file:
 ```
 In configuration_adv.h file:
@@ -374,10 +390,10 @@ In configuration_adv.h file:
 #define MAX_CONSECUTIVE_LOW_TEMPERATURE_ERROR_ALLOWED 10
 ```
 
-You will be using an TFT screen from BTT, it can any TFT screen you like but the only requirement is that it can run with the RS232 connector only.  Most 
-of the BTT TFT screen can run with only the TFT connector (or RS232, this limits the screen to using only the TFT screen or touch mode, the simulated 12864 LCD Marlin mode will NOT be available to you).
+You will be using an TFT screen from BTT. It can be any TFT screen you like but the only requirement is that the TFT screen can run with the RS232 connector only.  Most 
+of the BTT TFT screens can run with only the TFT connector (or RS232, this limits the screen to using only the TFT screen or touch mode, the simulated 12864 LCD Marlin mode will NOT be available to you).
 
-**In configuration.h**:
+**In configuration.h for the SKR V1.3 board**:
 ```	
 #define SERIAL_PORT -1
 #define SERIAL_PORT_2 0
