@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Bug report for SKR-V1.4-Turbo-Stepper-Driver-Jumper-Configuration-Manual
+about: Bug report for MAX31965-SKR-V1-3-GUIDE
 title: "[BUG] (short description)"
 labels: ''
 assignees: ''
