@@ -90,7 +90,7 @@ Original is:
 
 CHANGE TO:
 
-`             max31865.temperature(100, 430)  // 100 ohms = PT100 resistance. 400 ohms = calibration resistor`
+`             max31865.temperature(100, 430)  // 100 ohms = PT100 resistance. 430 ohms = calibration resistor`
 
 
 4B. **For Marlin 2.0.7.2**:  If you want to use the Adafruit MAX31865 boards **with a PT100**, you MUST use the Marlin variables in the **configuration.h** file to adjust the sensor resistance ohm value and calibration resistance ohm value as shown below.  If they are not present in **configuration.h** file then you will need to add the two statements below to **configuration.h** file.  Use the Marlin variables **instead of making the change in the Marlin software in temperature.cpp** as stated in 4A.
@@ -131,7 +131,7 @@ Original is:
 
 CHANGE TO:
 
-`             max31865.temperature(1000, 4300)  // 100 ohms = PT100 resistance. 400 ohms = calibration resistor`
+`             max31865.temperature(1000, 4300)  // 1000 ohms = PT100 resistance. 4300 ohms = calibration resistor`
 
 
 5B. **For Marlin 2.0.7.2**:  If you want to use the Adafruit MAX31865 boards **with a PT1000**, you MUST use the Marlin variables in the **configuration.h** file to adjust the sensor resistance ohm value and calibration resistance ohm value as shown below.  If they are not present in **configuration.h** file then you will need to add the two statements below to **configuration.h** file.  Use the Marlin variables **instead of making the change in the Marlin software in temperature.cpp** as stated in 5A.
