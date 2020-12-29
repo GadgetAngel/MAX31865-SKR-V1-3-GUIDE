@@ -186,6 +186,8 @@ to
 
 `MAX6675_._IS_MAX31865     = https://github.com/GadgetAngel/Adafruit-MAX31865-V1.1.0-Mod-M.git`
 
+**Because the SKR V1.3/V1.4/V1.4 TURBO boards are part of the LPC framework for Marlin the current Adafruit MAX31865 V1.1.0 library will NOT COMPILE due to the LPC framework uses a different compile time constant called ARDUINOLPC instead of ARDUINO**.  I have tried using the Adafruit MAX31865 V1.1.0 libarary and setting the ARDUINO constant but there are TOO MANY compile time warnings.  So my library "Adafruit-MAX31865-V1.1.0-Mod-M" incorporates the ARDUINOLPC constant which allows the Marlin user to COMPILE without warnings and to use the library.  My library "Adafruit-MAX31865-V1.1.0-Mod-M" is the Adafruit MAX31865 V1.1.0 library with additional stuff to allow it to work with more than just the SKR V1.3/V1.4/V1.4T boards.
+
 ---
 
 8. Do I have a 100 ohm or 1000 ohm MAX31865 board? Here is how you tell:
