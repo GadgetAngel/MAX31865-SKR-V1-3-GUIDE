@@ -1,8 +1,8 @@
-# Contributing to MAX31865-SKR_V1-3-GUIDE
+# Contributing to MAX31865-SKR-V1-3-GUIDE
 
-Thanks for your interest in contributing to MAX31865-SKR_V1-3-GUIDE!
+Thanks for your interest in contributing to MAX31865-SKR-V1-3-GUIDE!
 
-The following is a set of guidelines for contributing to MAX31865-SKR_V1-3-GUIDE, hosted by the [GadgetAngel](https://github.com/GadgetAngel) on GitHub. These are mostly guidelines, not rules. Use your best judgment, and feel free to propose changes to this document in a Pull Request.
+The following is a set of guidelines for contributing to MAX31865-SKR-V1-3-GUIDE, hosted by the [GadgetAngel](https://github.com/GadgetAngel) on GitHub. These are mostly guidelines, not rules. Use your best judgment, and feel free to propose changes to this document in a Pull Request.
 
 #### Table Of Contents
 
@@ -39,7 +39,7 @@ If chat is more your speed, you can join the MarlinFirmware Discord server:
 
 ### Reporting Bugs
 
-This section guides you through submitting a Bug Report for MAX31865-SKR_V1-3-GUIDE. Following these guidelines helps maintainers and the community understand your report, reproduce the behavior, and find related reports.
+This section guides you through submitting a Bug Report for MAX31865-SKR-V1-3-GUIDE. Following these guidelines helps maintainers and the community understand your report, reproduce the behavior, and find related reports.
 
 When you are creating a Bug Report, please [include as many details as possible](#how-do-i-submit-a-good-bug-report). Fill out [the required template](./ISSUE_TEMPLATE/bug_report.md), the information it asks for helps us resolve issues faster.
 
@@ -57,7 +57,7 @@ Explain the problem and include additional details to help maintainers reproduce
 
 ### Suggesting Features or Changes
 
-This section guides you through submitting a suggestion for MAX31865-SKR_V1-3-GUIDE, including completely new features. Following these guidelines helps maintainers and the community understand your suggestion and find related suggestions.
+This section guides you through submitting a suggestion for MAX31865-SKR-V1-3-GUIDE, including completely new features. Following these guidelines helps maintainers and the community understand your suggestion and find related suggestions.
 
 When you are creating an enhancement suggestion, please [include as many details as possible](#how-do-i-submit-a-good-feature-request). Fill in [the template](./ISSUE_TEMPLATE/feature_request.md).
 
