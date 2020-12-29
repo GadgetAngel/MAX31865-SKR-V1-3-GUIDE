@@ -180,6 +180,7 @@ Check that in **platformio.ini file** the following line exists in [common] unde
 `MAX6675_._IS_MAX31865     = Adafruit MAX31865 library@~1.1.0`
 
 Change the line:
+
 `MAX6675_._IS_MAX31865     = Adafruit MAX31865 library@~1.1.0`
 
 to
