@@ -61,11 +61,11 @@ LCD_PINS_RS is Register select (command/data) or software SPI signal SS for EXP1
 
 <img src="https://raw.githubusercontent.com/GadgetAngel/MAX31865-SKR-V1-3-GUIDE/main/images/Overvoltage%20Protection%20Block.jpg?raw=true" />
 
-The below wiring diagram for PT100 using Analog ADC input using 5V DC for the PT100 amplifier board but the MCU board (SKR V1.3 board) uses 3.3 VDC ADC reference voltage, therefore the Thermistor table to use for this is Table 21:
+The below wiring diagram for PT100 using Analog ADC input using 5V DC for the PT100 amplifier board but the MCU board (SKR V1.3 board) uses 3.3 VDC ADC reference voltage, therefore the **Thermistor table to use for this is Table 21**:
 
 <img src="https://raw.githubusercontent.com/GadgetAngel/MAX31865-SKR-V1-3-GUIDE/main/images/PT100%20Analog%20hook%20up%20with%205VDC%20power.jpg?raw=true" />
 
-The below wiring diagram for PT100 using Analog ADC input using 3.3 VDC for the PT100 amplifier board but the MCU board (SKR V1.3 board) uses 3.3 VDC ADC reference voltage, therefore the Thermistor table to use for this is Table 20:
+The below wiring diagram for PT100 using Analog ADC input using 3.3 VDC for the PT100 amplifier board but the MCU board (SKR V1.3 board) uses 3.3 VDC ADC reference voltage, therefore the **Thermistor table to use for this is Table 20**:
 
 <img src="https://raw.githubusercontent.com/GadgetAngel/MAX31865-SKR-V1-3-GUIDE/main/images/PT100%20Analog%20hook%20up%20with%203.3VDC%20power.jpg?raw=true" />
 
